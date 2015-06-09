@@ -1,23 +1,17 @@
-var express = require('express')
-  , routes = require('./routes')
-  , lists = require('./routes/lists')
-  , http = require('http')
-  , mcapi = require('mailchimp-api');
+var express = require('express'),
+  routes = require('./routes'),
+  http = require('http'),
+  mcapi = require('mailchimp-api');
 
 var app = express();
 
-// set MailChimp API key here
-mc = new mcapi.Mailchimp('123');
+mc = new mcapi.Mailchimp(process.env.MC_APIKEY);
 
-// all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.get('/', routes.index);
-app.get('/lists', lists.list);
-app.get('/lists/:id', lists.view);
-app.post('/lists/:id/subscribe', lists.subscribe);
 
 app.use(function(req, res, next){
     res.locals.error_flash = req.session.error_flash;
