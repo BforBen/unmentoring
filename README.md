@@ -1,2 +1,3 @@
-# unmentoring
-An app to run LocalGov Digital Unmentoring 
+# LocalGov Digital Unmentoring
+
+An app to run LocalGov Digital Unmentoring using a MailChimp list.

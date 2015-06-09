@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h2= list.name
+
+  h3= Members
+  table(class='table table-striped')
+    thead
+      tr
+        each header in ['Email', 'Subscribed Since']
+          th= header
+    tbody
+      each member in members
+        tr
+          td= member.email
+          td= member.timestamp
