@@ -1,16 +1,14 @@
 extends layout
 
 block content
-  h2= list.name
-
-  h3= Members
+  h2 Matches
   table(class='table table-striped')
     thead
       tr
-        each header in ['Email', 'Subscribed Since']
+        each header in ['Matched', 'With']
           th= header
     tbody
-      each member in members
+      each members in matches
         tr
-          td= member.email
-          td= member.timestamp
+          td= members.a.merges.FNAME + ' ' + members.a.merges.LNAME + ' (' + members.a.merges.EMAIL + ')'
+          td= members.b.merges.FNAME + ' ' + members.b.merges.LNAME + ' (' + members.b.merges.EMAIL + ')'

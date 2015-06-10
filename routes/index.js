@@ -1,4 +1,5 @@
-var mcapi = require('mailchimp-api');
+var mcapi = require('mailchimp-api'),
+    _ = require('underscore-node');
 
 exports.index = function(req, res){
   mc.helper.ping(function(data) {
@@ -9,7 +10,34 @@ exports.index = function(req, res){
     mc.lists.list({filters:{list_id: listId, exact: true}}, function(listData) {
       var list = listData.data[0];
       mc.lists.members({id: list.id, opts: { segment : { saved_segment_id: segmentId } } }, function(memberData) {
-        res.render('list', { title: list.title, list: list, members:memberData.data });
+        
+        var members = memberData.data;
+        
+        var matched = [];
+        
+        var count = _.size(members);
+        
+        if (count % 2 != 0)
+        {
+          throw "Not an even number of members";
+        }
+        
+        var toMatch = _.pluck(members, 'id');
+
+        _.each(
+          _.initial(members.concat(), count / 2),
+            function(member) {
+              var userHistory = JSON.parse(member.merges.UMHISTORY || '[]');
+              // Add self
+              userHistory.push(member.id);
+              var match = _.findWhere(members, { id: _.sample(_.difference(toMatch, userHistory)) });
+              matched.push({ "a": member, "b": match});
+              // Remove whoever we have matched
+              toMatch = _.without(toMatch, match.id, member.id);
+            });
+            
+        res.render('list', { title: 'LocalGov Digital Unmentoring Matcher', matches: matched });
+        
       }, function (err) {
         console.log(err);
         if (err.name == "List_DoesNotExist") {
